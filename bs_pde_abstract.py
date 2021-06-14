@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from auxiliary_functions import check_forward_reverse_mode_identity
 from black_blox import Black_box
+import numpy as np
 
 class Bs_pde_abstract(Black_box):
     @abstractmethod
@@ -19,31 +20,49 @@ class Bs_pde_abstract(Black_box):
     def copy(self):
         pass
 
-    def validate(self, diff_u, qoi_bar):
+    def set_u(self, u: np.ndarray):
+        assert(len(u)==3)
+        S0, sigma, r = u
+        self.S0 = S0
+        self.sigma = sigma
+        self.r = r
+
+    def get_u(self):
+        return np.array([self.S0, self.sigma, self.r])
+
+    def validate_forward(self, idx):
+        """
+        validates l = [0,0,0], l[idx]=1 in the forward mode
+        """
+        assert type(idx) == int and idx <= 2
         # bumping
         epsilon = 10e-7
+        u_increment = np.zeros(3); u_increment[idx]=1
         bs_pde_plus = self.copy()
-        bs_pde_plus.S0 = self.S0 + epsilon
+        bs_pde_plus.set_u(self.get_u() + u_increment * epsilon)
         bs_pde_minus = self.copy()
-        bs_pde_minus.S0 = self.S0 - epsilon
+        bs_pde_minus.set_u(self.get_u() - u_increment * epsilon)
         delta_bumping = (bs_pde_plus.evaluate() - bs_pde_minus.evaluate()) / (2 * epsilon)
 
         # complex variable trick
         epsilon = 10e-20
         bs_pde_complex = self.copy()
-        bs_pde_complex.S0 = self.S0 + epsilon * 1j
+        bs_pde_complex.set_u(self.get_u() + u_increment * epsilon * 1j)
         delta_complex_trick = bs_pde_complex.evaluate(is_complex=True).imag / epsilon
 
         # forward mode
-        qoi, delta = self.forward([1,0,0]) # since we compare this value with delta, choose diff_u = [1,0,0]
-        qoi, diff_qoi = self.forward(diff_u)
-
-        # reverse
-        u_bar = self.reverse(qoi_bar)
-        b, err = check_forward_reverse_mode_identity([diff_u], [u_bar], [], [], [diff_qoi], [qoi_bar], [], [])
+        u = [0,0,0]; u[idx] = 1
+        qoi, delta = self.forward(u) # since we compare this value with delta, choose diff_u = [1,0,0]
 
         print("Difference between the complex variable trick and bumping is: ",
               abs(delta_bumping - delta_complex_trick))
         print("Difference of delta between the forward mode and complex variable trick is:",
               abs(delta_complex_trick - delta))
+
+    def validate_reverse(self, diff_u, qoi_bar):
+        # forward mode
+        qoi, diff_qoi = self.forward(diff_u)
+        # reverse mode
+        u_bar = self.reverse(qoi_bar)
+        b, err = check_forward_reverse_mode_identity([diff_u], [u_bar], [], [], [diff_qoi], [qoi_bar], [], [])
         print("The forward/ reverse mode identiy holds:", b, "the error is:", err)

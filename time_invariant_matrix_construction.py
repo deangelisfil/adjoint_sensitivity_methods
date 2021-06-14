@@ -35,6 +35,9 @@ def diff_B_construction(S, sigma, r, diff_S, diff_sigma, diff_r) :
 
 
 def B_construction_reverse(B_bar, S_bar, S, sigma, r) :
+    """
+    :param S_bar: increases it. If there is no S_bar before, set it to 0.
+    """
     d = 2 * J + 1
     diff = J / N  # numerically more stable
     # diff = delta_t/delta_S

@@ -1,9 +1,7 @@
-#from abc import ABC, abstractmethod
 from auxiliary_functions import maximum
 import numpy as np
 
 class Payoff():
-    #@abstractmethod
     def __init__(self, payoff: callable, diff_payoff: callable, T):
         self._payoff = payoff
         self._diff_payoff = diff_payoff
@@ -22,6 +20,9 @@ class Call(Payoff):
         self.K = K
         self.T = T
 
+    def __repr__(self):
+        return "Call"
+
 class Put(Payoff):
     def __init__(self, K: float, T: float):
         self._payoff = lambda S, is_complex: maximum(K-S,0, is_complex)
@@ -29,4 +30,5 @@ class Put(Payoff):
         self.K = K
         self.T = T
 
-
+    def __repr__(self):
+        return "Put"

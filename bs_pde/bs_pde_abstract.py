@@ -4,12 +4,9 @@ from black_blox import Black_box
 import numpy as np
 
 class Bs_pde_abstract(Black_box):
-    @abstractmethod
-    def forward(self, diff_u):
-        pass
 
     @abstractmethod
-    def reverse(self, qoi_bar=1):
+    def copy(self):
         pass
 
     @abstractmethod
@@ -17,7 +14,11 @@ class Bs_pde_abstract(Black_box):
         pass
 
     @abstractmethod
-    def copy(self):
+    def forward(self, diff_u):
+        pass
+
+    @abstractmethod
+    def reverse(self, qoi_bar=1):
         pass
 
     def set_u(self, u: np.ndarray):
@@ -52,12 +53,15 @@ class Bs_pde_abstract(Black_box):
 
         # forward mode
         u = [0,0,0]; u[idx] = 1
-        qoi, delta = self.forward(u) # since we compare this value with delta, choose diff_u = [1,0,0]
+        qoi, delta = self.forward(u)
 
-        print("Difference between the complex variable trick and bumping is: ",
-              abs(delta_bumping - delta_complex_trick))
-        print("Difference of delta between the forward mode and complex variable trick is:",
-              abs(delta_complex_trick - delta))
+        err_complex = delta_bumping - delta_complex_trick
+        err_forward = delta_complex_trick - delta
+        rel_err_complex = err_complex/10e-16 if delta_complex_trick < 10e-16 else err_complex/delta_complex_trick
+        rel_err_forward = err_forward/10e-16 if delta < 10e-16 else err_forward/delta
+
+        print("Difference between the complex variable trick and bumping is: ", rel_err_complex)
+        print("Difference of delta between the forward mode and complex variable trick is:", rel_err_forward)
 
     def validate_reverse(self, diff_u, qoi_bar):
         # forward mode

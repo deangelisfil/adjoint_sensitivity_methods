@@ -1,11 +1,11 @@
-from bs_pde_adjoint.forward_mode import bs_pde_adjoint_forward
-from bs_pde_adjoint.reverse_mode import bs_pde_adjoint_reverse
-from bs_pde_adjoint.forward_pass import bs_pde_adjoint
-from bs_pde_abstract import Bs_pde_abstract
-from payoff import Payoff
+from bs_pde.bs_pde_adjoint.forward_mode import bs_pde_adjoint_forward
+from bs_pde.bs_pde_adjoint.reverse_mode import bs_pde_adjoint_reverse
+from bs_pde.bs_pde_adjoint.forward_pass import bs_pde_adjoint
+from bs_pde.bs_pde_abstract import Bs_pde_abstract
+from function import Function
 
 class Bs_pde_adjoint(Bs_pde_abstract):
-    def __init__(self, S0: float, sigma: float, r: float, option: Payoff) :
+    def __init__(self, S0: float, sigma: float, r: float, option: Function) :
         self.S0 = S0
         self.sigma = sigma
         self.r = r

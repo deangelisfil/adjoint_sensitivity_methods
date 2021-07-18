@@ -5,7 +5,7 @@ import numpy as np
 def calibration_sensitivity_standard(S0: float, sigma: float, r: float, option_list: list, loss: Calibration_loss,
                                      american, is_complex=False):
     K = len(option_list)
-    P_model = np.zeros(K)
+    P_model = np.zeros(K, dtype=complex) if is_complex else np.zeros(K)
     for k in range(K):
         P_model[k] = bs_pde_standard(S0, sigma, r, option_list[k], american, is_complex) # TO DO: simplify to not repeat S and B construction, same applies for bs_pde_f and forward mode
     loss = loss.evaluate(P_model)

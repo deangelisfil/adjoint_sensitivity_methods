@@ -1,8 +1,9 @@
 from calibration_sensitivity.calibration_sensitivity_adjoint.forward_pass import calibration_sensitivity_adjoint_f
 from bs_pde.bs_pde_adjoint.reverse_mode import bs_pde_adjoint_auxiliary_b
-from time_invariant_matrix_construction import *
+from B_construction.b_construction_time_invariant import *
 from calibration_sensitivity.calibration_loss import Calibration_loss
 import numpy as np
+from parameters import *
 
 def calibration_sensitivity_adjoint_b(S: float, sigma: float, r: float, B: np.ndarray, p_all_list: list,
                                       f: np.ndarray, P_model: np.ndarray, loss: Calibration_loss, loss_bar: float):
@@ -11,7 +12,7 @@ def calibration_sensitivity_adjoint_b(S: float, sigma: float, r: float, B: np.nd
     # No f_bar = np.outer(P_model_bar, p_all_list[-1]) because f does not depend on theta = {S0, sigma, r}
     B_bar = bs_pde_adjoint_auxiliary_b(B, p_all_list, p_bar)
     S_bar = np.zeros(S.shape)
-    S_bar, sigma_bar, r_bar = B_construction_reverse(B_bar, S_bar, S, sigma, r)
+    S_bar, sigma_bar, r_bar = B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, S_bar)
     S0_bar = sum(S_bar)
     return S0_bar, sigma_bar, r_bar
 

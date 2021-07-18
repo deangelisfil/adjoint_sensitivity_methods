@@ -1,7 +1,7 @@
-import numpy as np
-from time_invariant_matrix_construction import *
+from B_construction.b_construction_time_invariant import *
 from auxiliary_functions import maximum
 from function import Function
+from parameters import *
 
 def bs_pde_standard_auxiliary_forward(f, B, diff_f, diff_B):
     diff_b_all_list = []
@@ -29,17 +29,16 @@ def bs_pde_standard_forward(S0: float,
     S = np.array([S0 + j*delta_S for j in range(-J, J+1)])
     diff_u = option.diff_evaluate(S) * diff_S
     u = option.evaluate(S)
-    diff_B = diff_B_construction(S, sigma, r, diff_S, diff_sigma, diff_r)
-    B = B_construction(S, sigma, r)
+    diff_B = B_construction_time_invariant_forward(S, sigma, r, delta_t, delta_S, diff_S, diff_sigma, diff_r)
+    B = B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S)
     for n in reversed(range(N)):
         diff_u = np.dot(B, diff_u) + np.dot(diff_B, u)
         u = np.dot(B, u)
         if american:
             # holding  = heaviside_close(u-option.payoff(S), 1)
             holding = np.heaviside(u - option.evaluate(S), 1)
-            # print(holding)
             diff_u = diff_u * holding + option.diff_evaluate(S) * diff_S * (1 - holding)
             u = maximum(u, option.evaluate(S), is_complex=False)
     diff_qoi = diff_u[J]
-    qoi = u[J]
-    return qoi, diff_qoi
+    # qoi = u[J]
+    return diff_qoi

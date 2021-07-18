@@ -4,6 +4,7 @@ from bs_pde.bs_pde_standard.forward_pass import bs_pde_standard
 from bs_pde.bs_pde_abstract import Bs_pde_abstract
 from function import Function
 
+
 class Bs_pde_standard(Bs_pde_abstract):
     def __init__(self, S0: float, sigma: float, r: float, option: Function, american: bool = False) -> None:
         self.S0 = S0

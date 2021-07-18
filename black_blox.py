@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from auxiliary_functions import check_forward_reverse_mode_identity
+import numpy as np
 
 class Black_box(ABC):
 
@@ -7,11 +9,19 @@ class Black_box(ABC):
         pass
 
     @abstractmethod
-    def reverse(self, qoi_bar=1):
+    def reverse(self, qoi_bar):
         pass
 
     @abstractmethod
     def evaluate(self, is_complex=False):
+        pass
+
+    @abstractmethod
+    def set_u(self, u: list):
+        pass
+
+    @abstractmethod
+    def get_u(self) -> list:
         pass
 
     @abstractmethod

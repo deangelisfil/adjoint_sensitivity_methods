@@ -12,6 +12,6 @@ def calibration_sensitivity_standard_forward(S0: float, sigma: float, r: float,
     for k in range(K):
         P_model[k], diff_P_model[k] = bs_pde_standard_forward(S0, sigma, r, diff_S0, diff_sigma, diff_r, option_list[k], american)
     diff_loss = np.dot(loss.diff_evaluate(P_model), diff_P_model)
-    loss = loss.evaluate(P_model)
-    return loss, diff_loss
+    # loss = loss.evaluate(P_model)
+    return diff_loss
 

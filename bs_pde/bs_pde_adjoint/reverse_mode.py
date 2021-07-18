@@ -1,7 +1,7 @@
-from time_invariant_matrix_construction import *
+from B_construction.b_construction_time_invariant import *
 from bs_pde.bs_pde_adjoint.forward_pass import bs_pde_adjoint_f
 from function import Function
-
+from parameters import *
 
 def bs_pde_adjoint_auxiliary_b(B: np.ndarray, p_all_list: list, p_bar: float) -> tuple:
     d = 2 * J + 1
@@ -17,7 +17,7 @@ def bs_pde_adjoint_b(S: float, sigma: float, r: float, option: Function, B: np.n
     S_bar = p_all_list[-1] * option.diff_evaluate(S) * qoi_bar  # first/second multiplication is elementwise/scalar
     p_bar = option.evaluate(S) * qoi_bar
     B_bar = bs_pde_adjoint_auxiliary_b(B, p_all_list, p_bar)
-    S_bar, sigma_bar, r_bar = B_construction_reverse(B_bar, S_bar, S, sigma, r)
+    S_bar, sigma_bar, r_bar = B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, S_bar)
     S0_bar = sum(S_bar)
     return S0_bar, sigma_bar, r_bar
 

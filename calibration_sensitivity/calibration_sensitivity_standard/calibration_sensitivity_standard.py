@@ -19,7 +19,7 @@ class Calibration_sensitivity_standard(Calibration_sensitivity_abstract):
                ", K=" + str(len(self.option_list))
 
     def copy(self) :
-        return Calibration_sensitivity_standard(self.S0, self.sigma, self.r, self.option_list, self.loss)
+        return Calibration_sensitivity_standard(self.S0, self.sigma, self.r, self.option_list, self.loss, self.american)
 
     def evaluate(self, is_complex=False) -> float:
         return calibration_sensitivity_standard(self.S0, self.sigma, self.r, self.option_list, self.loss, self.american,
@@ -27,9 +27,9 @@ class Calibration_sensitivity_standard(Calibration_sensitivity_abstract):
 
     def forward(self, diff_u):
         diff_S0, diff_sigma, diff_r = diff_u
-        return calibration_sensitivity_standard_forward(self.S0, self.sigma, self.r, diff_S0, diff_sigma, diff_r, self.option_list,
-                                                        self.loss, self.american)
+        return calibration_sensitivity_standard_forward(self.S0, self.sigma, self.r, diff_S0, diff_sigma, diff_r,
+                                                        self.option_list, self.loss, self.american)
 
     def reverse(self, loss_bar=1):
-        return calibration_sensitivity_standard_reverse(self.S0, self.sigma, self.r, self.option_list, self.loss, self.american,
-                                                        loss_bar)
+        return calibration_sensitivity_standard_reverse(self.S0, self.sigma, self.r, self.option_list, self.loss,
+                                                        self.american, loss_bar)

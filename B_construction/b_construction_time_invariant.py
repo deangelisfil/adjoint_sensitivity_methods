@@ -1,12 +1,10 @@
-from parameters import *
 import numpy as np
 
 
-def B_construction(S, sigma, r) :
-    # diff = delta_t / delta_S
-    diff = J / N  # numerically more stable
-    # diff2 = delta_t / delta_S**2
-    diff2 = J ** 2 / N
+
+def B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S) :
+    diff = delta_t / delta_S
+    diff2 = delta_t / delta_S ** 2
     a = S ** 2 * sigma ** 2 * diff2 / 2
     b = S * r * diff / 2
     low = a[1 :] - b[1 :]
@@ -18,11 +16,9 @@ def B_construction(S, sigma, r) :
     return B
 
 
-def diff_B_construction(S, sigma, r, diff_S, diff_sigma, diff_r) :
-    # diff = delta_t / delta_S
-    diff = J / N
-    # diff2 = delta_t / delta_S**2
-    diff2 = J ** 2 / N
+def B_construction_time_invariant_forward(S, sigma, r, delta_t, delta_S, diff_S, diff_sigma, diff_r) :
+    diff = delta_t / delta_S
+    diff2 = delta_t / delta_S ** 2
     a = S ** 2 * (sigma * diff_sigma * diff2) + S * diff_S * (sigma ** 2 * diff2)
     b = S * diff_r * diff / 2 + diff_S * r * diff / 2
     low = a[1 :] - b[1 :]
@@ -34,15 +30,13 @@ def diff_B_construction(S, sigma, r, diff_S, diff_sigma, diff_r) :
     return diff_B
 
 
-def B_construction_reverse(B_bar, S_bar, S, sigma, r) :
+def B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, S_bar) :
     """
     :param S_bar: increases it. If there is no S_bar before, set it to 0.
     """
-    d = 2 * J + 1
-    diff = J / N  # numerically more stable
-    # diff = delta_t/delta_S
-    diff2 = J ** 2 / N
-    # diff2 = delta_t/delta_S**2
+    diff = delta_t / delta_S
+    diff2 = delta_t / delta_S ** 2
+    d = S.size
     sigma_bar = 0
     r_bar = (-delta_t + diff * S[-1]) * B_bar[-1][-1] - S[-1] * diff * B_bar[-1][-2]
     S_bar[-1] = S_bar[-1] + r * diff * (B_bar[-1][-1] - B_bar[-1][-2])

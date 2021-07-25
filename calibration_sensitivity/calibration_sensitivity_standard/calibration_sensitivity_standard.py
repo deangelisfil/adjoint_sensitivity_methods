@@ -26,8 +26,9 @@ class Calibration_sensitivity_standard(Calibration_sensitivity_abstract):
                                                 is_complex)
 
     def forward(self, diff_u):
-        diff_S0, diff_sigma, diff_r = diff_u
-        return calibration_sensitivity_standard_forward(self.S0, self.sigma, self.r, diff_S0, diff_sigma, diff_r,
+        assert len(diff_u) == 2
+        diff_sigma, diff_r = diff_u
+        return calibration_sensitivity_standard_forward(self.S0, self.sigma, self.r, diff_sigma, diff_r,
                                                         self.option_list, self.loss, self.american)
 
     def reverse(self, loss_bar=1):

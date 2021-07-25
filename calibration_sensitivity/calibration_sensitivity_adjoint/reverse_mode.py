@@ -13,14 +13,14 @@ def calibration_sensitivity_adjoint_b(S: float, sigma: float, r: float, B: np.nd
     B_bar = bs_pde_adjoint_auxiliary_b(B, p_all_list, p_bar)
     S_bar = np.zeros(S.shape)
     S_bar, sigma_bar, r_bar = B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, S_bar)
-    S0_bar = sum(S_bar)
-    return S0_bar, sigma_bar, r_bar
+    # S0_bar = sum(S_bar) # ignore S0
+    return sigma_bar, r_bar
 
 def calibration_sensitivity_adjoint_reverse(S0: float, sigma: float, r: float, option_list: list, loss: Calibration_loss,
                                             loss_bar: float = 1):
     # forward pass
     S, B, p_all_list, f, P_model = calibration_sensitivity_adjoint_f(S0, sigma, r, option_list)
     # backward pass
-    S0_bar, sigma_bar, r_bar = calibration_sensitivity_adjoint_b(S, sigma, r, B, p_all_list, f, P_model, loss, loss_bar)
-    return S0_bar, sigma_bar, r_bar
+    sigma_bar, r_bar = calibration_sensitivity_adjoint_b(S, sigma, r, B, p_all_list, f, P_model, loss, loss_bar)
+    return sigma_bar, r_bar
 

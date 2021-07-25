@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 # grid parameters
-S0 = 10
+S0 = 1
 sigma = 0.2
 r = 0.1
 K = 1

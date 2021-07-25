@@ -9,7 +9,7 @@ from calibration_sensitivity.calibration_sensitivity_standard.calibration_sensit
 from matplotlib import pyplot as plt
 import time
 
-def calibration_visualize(validate = False, diff_u = [1,0,0], qoi_bar =  1):
+def calibration_visualize(validate = False, idx_forward_validation = 0, diff_u = [1, 0], qoi_bar =  1):
     # TO DO: write the function in order for it to make sense
     lr = 0.1
     nbr_epochs = 10
@@ -38,7 +38,7 @@ def calibration_visualize(validate = False, diff_u = [1,0,0], qoi_bar =  1):
         start_time = time.time()
         if validate:
             print("Standard Calibration:")
-            calibration_standard.validate(1, diff_u, qoi_bar)
+            calibration_standard.validate(idx_forward_validation, diff_u, qoi_bar)
         calibration_optimization(calibration_standard, nbr_epochs, lr)
         end_time = time.time()
         time_standard_all.append(end_time - start_time)
@@ -47,7 +47,7 @@ def calibration_visualize(validate = False, diff_u = [1,0,0], qoi_bar =  1):
         start_time = time.time()
         if validate:
             print("Adjoint Calibration:")
-            calibration_adjoint.validate(1, diff_u, qoi_bar)
+            calibration_adjoint.validate(idx_forward_validation, diff_u, qoi_bar)
         calibration_optimization(calibration_adjoint, nbr_epochs, lr)
         end_time = time.time()
         time_adjoint_all.append(end_time - start_time)

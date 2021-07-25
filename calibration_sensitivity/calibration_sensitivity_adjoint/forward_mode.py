@@ -4,10 +4,9 @@ from calibration_sensitivity.calibration_loss import Calibration_loss
 import numpy as np
 from parameters import *
 
-def calibration_sensitivity_adjoint_forward(S0: float, sigma: float, r: float,
-                                            diff_S0: float, diff_sigma: float, diff_r: float,
+def calibration_sensitivity_adjoint_forward(S0: float, sigma: float, r: float, diff_sigma: float, diff_r: float,
                                             option_list: list, loss: Calibration_loss):
-    diff_S = diff_S0 * np.ones(2*J + 1)
+    diff_S = np.zeros(2*J + 1) # S is seen as fixed
     S = np.array([S0 + j*delta_S for j in range(-J, J+1)])
     diff_B = B_construction_time_invariant_forward(S, sigma, r, delta_t, delta_S, diff_S, diff_sigma, diff_r)
     B = B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S)

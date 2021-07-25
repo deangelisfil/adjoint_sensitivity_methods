@@ -18,7 +18,8 @@ def calibration_sensitivity_standard_b(S: float, sigma: float, r: float, option_
         S0_bar += S0_bar_delta
         sigma_bar += sigma_bar_delta
         r_bar += r_bar_delta
-    return S0_bar, sigma_bar, r_bar
+    # ignore S0_bar
+    return sigma_bar, r_bar
 
 
 def calibration_sensitivity_standard_reverse(S0: float, sigma: float, r: float, option_list: list, loss: Calibration_loss,
@@ -27,7 +28,7 @@ def calibration_sensitivity_standard_reverse(S0: float, sigma: float, r: float, 
     P_model, S, B, u_all_payoff_list, u_hat_all_payoff_lis = calibration_sensitivity_standard_f(S0, sigma, r, option_list, loss,
                                                                                                 american)
     # backward pass
-    S0_bar, sigma_bar, r_bar = calibration_sensitivity_standard_b(S, sigma, r, option_list, loss, american, B,
+    sigma_bar, r_bar = calibration_sensitivity_standard_b(S, sigma, r, option_list, loss, american, B,
                                                                   u_all_payoff_list, u_hat_all_payoff_lis, P_model, loss_bar)
-    return S0_bar, sigma_bar, r_bar
+    return sigma_bar, r_bar
 

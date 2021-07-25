@@ -58,7 +58,7 @@ class Bs_pde_abstract(Black_box):
         diff_qoi_complex_trick = black_box_complex.evaluate(is_complex=True).imag / epsilon
 
         # forward mode
-        diff_u = [0,0,0]
+        diff_u = len(u) * [0]
         diff_u[idx] = 1
         diff_qoi = self.forward(diff_u)
 

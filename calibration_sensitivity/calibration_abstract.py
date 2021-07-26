@@ -1,9 +1,8 @@
 from abc import abstractmethod
-from bs_pde.bs_pde_abstract import Bs_pde_abstract
 from black_blox import Black_box
 from auxiliary_functions import check_forward_reverse_mode_identity
 
-class Calibration_sensitivity_abstract(Bs_pde_abstract):
+class Calibration_sensitivity_abstract(Black_box):
 
     @abstractmethod
     def copy(self):

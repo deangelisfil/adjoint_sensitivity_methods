@@ -11,7 +11,6 @@ def calibration_optimization(calibration: Calibration_sensitivity_adjoint, nbr_e
         # update theta = {sigma, r}
         u_new = np.array([sigma_new, r_new])
         calibration.set_u(u_new)
-
         # print("Epoch:", epoch, " Loss:", np.round(loss, 10), " sigma_bar:", np.round(sigma_bar, 5), " r_bar:", np.round(r_bar, 5))
 
 

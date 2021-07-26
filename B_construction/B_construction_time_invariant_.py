@@ -4,7 +4,7 @@ from B_construction.b_construction_time_invariant import *
 from auxiliary_functions import check_forward_reverse_mode_identity
 
 class B_construction_time_invariant(Black_box):
-    def __init__(self, S: np.ndarray, sigma: float, r: float, delta_t: float, delta_S: float) :
+    def __init__(self, S: np.ndarray, sigma, r: float, delta_t: float, delta_S: float) :
         self.S = S
         self.sigma = sigma
         self.r = r

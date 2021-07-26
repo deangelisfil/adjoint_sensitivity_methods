@@ -46,10 +46,11 @@ def check_forward_reverse_mode_identity(diff_u_list=[], u_bar_list=[], diff_A_li
         sum_rhs += np.dot(v_bar, diff_v)
     for diff_B, B_bar in zip(diff_B_list, B_bar_list) :
         sum_rhs += np.trace(B_bar.transpose() @ diff_B)
-    # print(sum_lhs, sum_rhs)
     err = abs(sum_lhs - sum_rhs)
 
-    return err < 10e-15, err
+    rel_err = err / 10e-15 if min( abs(sum_lhs), abs(sum_lhs)) < 10e-15 else err / min( abs(sum_lhs), abs(sum_lhs))
+    return rel_err < 10e-15, rel_err
+    # return err < 10e-15, err
 
 def heaviside_close(x1, x2):
     closeCheck = np.isclose(x1, np.zeros_like(x1), atol=1e-16)

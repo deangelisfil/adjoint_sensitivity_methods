@@ -37,7 +37,10 @@ def B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, 
     diff = delta_t / delta_S
     diff2 = delta_t / delta_S ** 2
     d = S.size
-    sigma_bar = 0
+    if type(sigma) is np.ndarray:
+        sigma_bar = np.zeros(len(sigma))
+    else:
+        sigma_bar = 0
     r_bar = (-delta_t + diff * S[-1]) * B_bar[-1][-1] - S[-1] * diff * B_bar[-1][-2]
     S_bar[-1] = S_bar[-1] + r * diff * (B_bar[-1][-1] - B_bar[-1][-2])
     for j in reversed(range(d - 1)) :
@@ -48,7 +51,11 @@ def B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, 
         else :
             a_bar = B_bar[j][j - 1] - 2 * B_bar[j][j] + B_bar[j][j + 1]
             b_bar = - B_bar[j][j - 1] + B_bar[j][j + 1]
-        sigma_bar = sigma_bar + sigma * S[j] ** 2 * diff2 * a_bar
-        S_bar[j] = S_bar[j] + sigma ** 2 * S[j] * diff2 * a_bar + r / 2 * diff * b_bar
+        if type(sigma) is np.ndarray:
+            sigma_bar[j] = sigma_bar[j] + sigma[j] * S[j] ** 2 * diff2 * a_bar
+            S_bar[j] = S_bar[j] + sigma[j] ** 2 * S[j] * diff2 * a_bar + r / 2 * diff * b_bar
+        else:
+            sigma_bar = sigma_bar + sigma * S[j] ** 2 * diff2 * a_bar
+            S_bar[j] = S_bar[j] + sigma ** 2 * S[j] * diff2 * a_bar + r / 2 * diff * b_bar
         r_bar = r_bar + S[j] / 2 * diff * b_bar - delta_t * B_bar[j][j]
     return S_bar, sigma_bar, r_bar

@@ -1,31 +1,32 @@
 import numpy as np
 
-def maximum(arg1: np.array, arg2, is_complex: bool) -> np.array:
+
+def maximum(arg1: np.array, arg2, is_complex: bool) -> np.array :
     """
     Elementwise maximum of two numpy arrays or of a numpy array with an integer.
     Defines the analytic extension of the maximum function in the complex case.
     If the entries are complex, return the entry with the biggest real part.
     If the real parts are equal, return the entry of the first argument.
     """
-    if is_complex:
+    if is_complex :
         res = []
-        if type(arg2) == np.ndarray:
+        if type(arg2) == np.ndarray :
             assert arg1.shape == arg2.shape
-            for el1, el2 in zip(arg1, arg2):
-                if el1.real >= el2.real or np.isclose(el1.real,0,atol=1e-16):
+            for el1, el2 in zip(arg1, arg2) :
+                if el1.real >= el2.real or np.isclose(el1.real, 0, atol=1e-16) :
                     res.append(el1)
-                else:
+                else :
                     res.append(el2)
-        else:
+        else :
             # arg2 is integer
             assert type(arg2) == int
-            for el in arg1:
-                if el.real >= arg2:
+            for el in arg1 :
+                if el.real >= arg2 :
                     res.append(el)
-                else:
+                else :
                     res.append(arg2)
         return np.array(res)
-    else:
+    else :
         return np.maximum(arg1, arg2)
 
 
@@ -48,13 +49,25 @@ def check_forward_reverse_mode_identity(diff_u_list=[], u_bar_list=[], diff_A_li
         sum_rhs += np.trace(B_bar.transpose() @ diff_B)
     err = abs(sum_lhs - sum_rhs)
 
-    rel_err = err / 10e-15 if min( abs(sum_lhs), abs(sum_lhs)) < 10e-15 else err / min( abs(sum_lhs), abs(sum_lhs))
+    rel_err = err / 10e-15 if min(abs(sum_lhs), abs(sum_lhs)) < 10e-15 else err / min(abs(sum_lhs), abs(sum_lhs))
     return rel_err < 10e-15, rel_err
     # return err < 10e-15, err
 
-def heaviside_close(x1, x2):
-    closeCheck = np.isclose(x1, np.zeros_like(x1), atol=1e-16)
-    heavisideBare = np.heaviside(x1, 0.0)
-    zeroVal = np.where(closeCheck, x2, 0.0)-np.where(closeCheck, heavisideBare, np.zeros_like(heavisideBare))
-    result = heavisideBare+zeroVal
-    return result
+
+def perturbe_scalar(scalar, type, epsilon) :
+    assert type in {"plus", "minus", "complex"}
+    if type == "plus" :
+        scalar = scalar + epsilon
+    elif type == "minus" :
+        scalar = scalar - epsilon
+    else :
+        # type == "complex"
+        scalar = scalar + epsilon * 1j
+    return scalar
+
+# def heaviside_close(x1, x2):
+#     closeCheck = np.isclose(x1, np.zeros_like(x1), atol=1e-16)
+#     heavisideBare = np.heaviside(x1, 0.0)
+#     zeroVal = np.where(closeCheck, x2, 0.0)-np.where(closeCheck, heavisideBare, np.zeros_like(heavisideBare))
+#     result = heavisideBare+zeroVal
+#     return result

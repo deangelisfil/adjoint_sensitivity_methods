@@ -1,4 +1,4 @@
-from B_construction.b_construction_time_invariant import *
+from B_construction.B_construction_time_invariant_ import B_construction_time_invariant
 from bs_pde.bs_pde_standard.forward_pass import bs_pde_standard_f
 from function  import Function
 from parameters import *
@@ -54,7 +54,8 @@ def bs_pde_standard_b(S: float,
         else :
             B_bar = B_bar + np.outer(u_bar, u_all_list[n + 1])
             u_bar = np.dot(B_transpose, u_bar)
-    S_bar, sigma_bar, r_bar = B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, S_bar)
+    B_construction = B_construction_time_invariant(S, sigma, r, delta_t, delta_S)
+    S_bar, sigma_bar, r_bar = B_construction.reverse(B_bar, S_bar = S_bar)
     S_bar = S_bar + option.diff_evaluate(S) * u_bar  # elementwise multiplication
     S0_bar = sum(S_bar)
     return S0_bar, sigma_bar, r_bar

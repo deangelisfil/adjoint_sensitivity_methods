@@ -27,6 +27,3 @@ class Bs_pde_adjoint(Bs_pde_abstract):
 
     def reverse(self, qoi_bar=1):
         return bs_pde_adjoint_reverse(self.S0, self.sigma, self.r, self.option, qoi_bar)
-
-
-

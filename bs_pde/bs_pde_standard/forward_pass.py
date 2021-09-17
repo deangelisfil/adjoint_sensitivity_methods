@@ -1,4 +1,4 @@
-from B_construction.b_construction_time_invariant import *
+from B_construction.B_construction_time_invariant_ import B_construction_time_invariant
 from auxiliary_functions import maximum
 from function import Function
 from parameters import *
@@ -20,7 +20,8 @@ def bs_pde_standard(S0 : float,
                     american : bool = False,
                     is_complex: bool = False) -> float:
     S = np.array([S0 + j * delta_S for j in range(-J, J + 1)])
-    B = B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S)
+    B_construction = B_construction_time_invariant(S, sigma, r, delta_t, delta_S)
+    B = B_construction.evaluate()
     f = option.evaluate(S, is_complex)
     return bs_pde_standard_auxiliary(f, B, american, is_complex)
 
@@ -41,7 +42,8 @@ def bs_pde_standard_auxiliary_f(f, B, american=False) :
 
 def bs_pde_standard_f(S0: float, sigma: float, r: float, option: Function, american: bool = False) -> tuple:
     S = np.array([S0 + j * delta_S for j in range(-J, J + 1)])
-    B = B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S)
+    B_construction = B_construction_time_invariant(S, sigma, r, delta_t, delta_S)
+    B = B_construction.evaluate()
     f = option.evaluate(S)
     qoi, u_all_list, u_hat_all_list = bs_pde_standard_auxiliary_f(f, B, american)
     return qoi, S, B, u_all_list, u_hat_all_list

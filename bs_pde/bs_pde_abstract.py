@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from auxiliary_functions import check_forward_reverse_mode_identity
-from black_blox import Black_box
+from black_box import Black_box
 import numpy as np
 
 class Bs_pde_abstract(Black_box):
@@ -28,7 +28,7 @@ class Bs_pde_abstract(Black_box):
         self.sigma = sigma
         self.r = r
 
-    def get_u(self) -> np.ndarray:
+    def get_u(self) -> list:
         return [self.S0, self.sigma, self.r]
 
     def validate_reverse(self, diff_u, qoi_bar):

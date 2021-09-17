@@ -9,6 +9,7 @@ from calibration_sensitivity.calibration_sensitivity_standard.calibration_sensit
 from matplotlib import pyplot as plt
 import time
 
+
 def calibration_visualize(validate = False, idx_forward_validation = 0, diff_u = [1, 0], qoi_bar =  1):
     # TO DO: write the function in order for it to make sense
     lr = 0.1

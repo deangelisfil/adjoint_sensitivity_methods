@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 def B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S) :
     diff = delta_t / delta_S
     diff2 = delta_t / delta_S ** 2

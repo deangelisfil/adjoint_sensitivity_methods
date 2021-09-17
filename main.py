@@ -5,12 +5,13 @@ from calibration_sensitivity.calibration_sensitivity_standard.calibration_sensit
     import Calibration_sensitivity_standard
 from calibration_sensitivity.calibration_sensitivity_adjoint.calibration_sensitivity_adjoint \
     import Calibration_sensitivity_adjoint
+from calibration_sensitivity.calibration_visualize import calibration_visualize
 from splines.Cubic_splines_construction import Cubic_splines_construction
 from splines.Cubic_splines_evaluation import Cubic_splines_evaluation
 from B_construction.B_construction_time_invariant_ import B_construction_time_invariant
 from bs_pde.bs_pde_standard.bs_pde_standard import Bs_pde_standard
 from bs_pde.bs_pde_adjoint.bs_pde_adjoint import Bs_pde_adjoint
-
+from bs_pde.bs_pde_adjoint.bs_pde_adjoint_auxiliary.bs_pde_adjoint_auxiliary import Bs_pde_adjoint_auxiliary
 
 
 if __name__ == "__main__":
@@ -25,44 +26,39 @@ if __name__ == "__main__":
     #qoi_bar = 1
     qoi_bar = np.random.randn()
 
-    S = np.array([S0 + j*delta_S for j in range(-J, J+1)])
-    diff_S = diff_u[0] * np.ones(2*J + 1)
-    S_p = np.array([0, 0.5, 1, 1.5, 2])
-    sigma_p = np.array([1, 0.4, 0.2, 0.4, 1])
+    S = np.array([S0 + j*delta_S for j in range(-J, J+1)]) + 0.01 # to avoid jumps in the binary search
+    diff_S = diff_u[0] * np.ones(len(S))
     #S = np.array([0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15])
-    #diff_S = diff_u[0] * np.ones(len(S))
+    S_p = np.array([0, 0.5, 1, 1.5, 2])
+    sigma_p = np.array([0.3, 0.2, 0.05, 0.2, 0.3])
     #sigma_bar = np.ones(len(S))
     sigma_bar = np.random.randn(len(S))
-    diff_sigma_p = np.array([1,0,0,0,0])
-    #diff_sigma_p = np.random.randn(5)
-    sigma_p_double_prime_bar = np.ones(S_p.shape)
-    #sigma_p_double_prime_bar = np.random.randn(5)
+    #diff_sigma_p = np.array([1,0,0,0,0])
+    diff_sigma_p = np.random.randn(5)
+    #sigma_p_double_prime_bar = np.ones(len(S_p))
+    sigma_p_double_prime_bar = np.random.randn(len(S_p))
 
     print("Cubic Spline construction:")
     cubic_splines_construction = Cubic_splines_construction(S_p, sigma_p)
-    cubic_splines_construction.validate(0, diff_sigma_p, sigma_p_double_prime_bar)
+    # cubic_splines_construction.validate(0, [diff_sigma_p], sigma_p_double_prime_bar, 0)
     print("------------------")
 
     cubic_splines_evaluation = Cubic_splines_evaluation(S, cubic_splines_construction)
     print("Test cubic interpolation: ")
-    print(cubic_splines_evaluation.evaluate())
-    # print(cubic_splines_evaluation.forward([diff_S, diff_sigma_p]))
-    # S_bar, sigma_p_bar = cubic_splines_evaluation.reverse(sigma_bar)
-    # print(S_bar)
-    # print(sigma_p_bar)
-    cubic_splines_evaluation.validate_reverse([diff_S, diff_sigma_p], sigma_bar)
+    # print(cubic_splines_evaluation.evaluate())
+    # cubic_splines_evaluation.validate(1, [diff_S, diff_sigma_p], sigma_bar, 0)
     print("---------------")
 
     print("B construction")
     sigma_v = cubic_splines_evaluation.evaluate()
-    # sigma_v = np.array([sigma + abs(j) * delta_S//10 for j in range(-J, J+1)])
-    diff_sigma_v = np.ones(len(S))
-    B_bar = np.ones((2*J+1, 2*J+1))
+    # diff_sigma_v = np.ones(len(S))
+    diff_sigma_v = np.random.rand(len(S))
+    # B_bar = np.ones((2*J+1, 2*J+1))
+    B_bar = np.random.rand(2*J+1, 2*J+1)
+    B_construction = B_construction_time_invariant(S, sigma_v, r, delta_t, delta_S)
+    B_construction.validate(0, [diff_S, diff_sigma_v, diff_u[2]], B_bar, 0)
 
-    B = B_construction_time_invariant(S, sigma_v, r, delta_t, delta_S)
-    B.validate_reverse([diff_S, diff_sigma_v, diff_u[2]], B_bar)
     print("---------------")
-
     BS_PDE = Bs_pde_standard(S0, sigma, r, stock)
     print(BS_PDE)
     BS_PDE.validate(0, diff_u, qoi_bar)
@@ -72,7 +68,27 @@ if __name__ == "__main__":
     BS_PDE_ADJOINT = Bs_pde_adjoint(S0, sigma, r, stock)
     print(BS_PDE_ADJOINT)
     BS_PDE_ADJOINT.validate(0, diff_u, qoi_bar)
+
     print("--------------")
+    print("Auxiliary adjoint PDE")
+    B_construction = B_construction_time_invariant(S, sigma_v, r, delta_t, delta_S)
+    B = B_construction.evaluate()
+
+    BS_PDE_ADJOINT_AUXILIARY = Bs_pde_adjoint_auxiliary(B)
+    print(BS_PDE_ADJOINT_AUXILIARY)
+    # print(BS_PDE_ADJOINT_AUXILIARY.evaluate())
+    # diff_B = B_construction.forward([diff_S, diff_sigma_v, diff_u[2]])
+    diff_B = np.random.rand(2*J+1, 2*J+1)
+    # print(BS_PDE_ADJOINT_AUXILIARY.forward([diff_B]))
+    p_bar = np.ones(len(S))
+    # p_bar = np.random.rand(2*J+1)
+    # print(BS_PDE_ADJOINT_AUXILIARY.reverse(p_bar))
+    # p_bar = np.random.randn(len(S))
+    BS_PDE_ADJOINT_AUXILIARY.validate(0, [diff_B], p_bar,
+                                      idx_array_forward_validation=0,
+                                      idx_matrix_forward_validation=0)
+
+
     # plt.plot(K_call_all, P_call_market)
     # plt.show()
 
@@ -89,21 +105,15 @@ if __name__ == "__main__":
     calibration_standard = Calibration_sensitivity_standard(S0, sigma, r, option_list, loss, american=False)
     calibration_adjoint = Calibration_sensitivity_adjoint(S0, sigma, r, option_list, loss)
 
-    # print("Standard Calibration:")
-    # print(calibration_standard.evaluate())
-    # print(calibration_standard.forward([diff_u[1], diff_u[2]]))
-    # print(calibration_standard.reverse(qoi_bar))
-    # calibration_standard.validate(0, [diff_u[1], diff_u[2]], qoi_bar)
+    print("--------------")
+    print("Standard Calibration:")
+    calibration_standard.validate(0, [diff_u[1], diff_u[2]], qoi_bar)
 
-    # print("Adjoint Calibration:")
-    # print(calibration_adjoint.evaluate())
-    # print(calibration_adjoint.forward([diff_u[1], diff_u[2]]))
-    # print(calibration_adjoint.reverse(qoi_bar))
-    # calibration_adjoint.validate(0, [diff_u[1], diff_u[2]], qoi_bar)
+    print("Adjoint Calibration:")
+    calibration_adjoint.validate(0, [diff_u[1], diff_u[2]], qoi_bar)
+    print("--------------")
 
-    # calibration_optimization(calibration_adjoint, 100, 0.1)
-
-    #calibration_visualize(validate=True, diff_u=[diff_u[1], diff_u[2]], qoi_bar = qoi_bar)
+    # calibration_visualize(validate=False, diff_u=[diff_u[1], diff_u[2]], qoi_bar = qoi_bar)
 
 
 

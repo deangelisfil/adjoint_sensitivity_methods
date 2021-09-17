@@ -1,6 +1,7 @@
-from black_blox import Black_box
+from black_box import Black_box
 import numpy as np
 from auxiliary_functions import check_forward_reverse_mode_identity
+
 
 class Cubic_splines_construction(Black_box):
     def __init__(self, S_p: np.ndarray, sigma_p: np.ndarray) :
@@ -15,12 +16,12 @@ class Cubic_splines_construction(Black_box):
     def copy(self) :
         return Cubic_splines_construction(self.S_p, self.sigma_p)
 
-    def get_u(self):
-        return self.sigma_p
+    def get_u(self) -> list:
+        return [self.sigma_p]
 
-    def set_u(self, u: np.ndarray):
-        assert type(u) != list
-        self.sigma_p = u
+    def set_u(self, u: list):
+        assert len(u) == 1
+        self.sigma_p = np.array(u[0])
 
     def construct_A_B(self):
         h = np.diff(self.S_p)
@@ -44,7 +45,8 @@ class Cubic_splines_construction(Black_box):
         return sigma_p_double_prime
 
     def forward(self, diff_u):
-        diff_sigma_p = np.array(diff_u)
+        assert isinstance(diff_u, list) and len(diff_u) == 1
+        diff_sigma_p = diff_u[0]
         A, B = self.construct_A_B()
         diff_sigma_p_double_prime = np.linalg.inv(A) @ (B @ diff_sigma_p)
         return diff_sigma_p_double_prime
@@ -62,7 +64,7 @@ class Cubic_splines_construction(Black_box):
         diff_qoi = self.forward(diff_u)
         # reverse mode
         u_bar = self.reverse(qoi_bar)
-        b, err = check_forward_reverse_mode_identity(diff_u, u_bar, [], [], diff_qoi, qoi_bar, [], [])
-        print("The forward/ reverse mode identiy holds:", b, "the error is:", err)
+        b, err = check_forward_reverse_mode_identity(diff_u, [u_bar], [], [], diff_qoi, qoi_bar, [], [])
+        print("The forward/ reverse mode identity holds:", b, "the error is:", err)
 
 

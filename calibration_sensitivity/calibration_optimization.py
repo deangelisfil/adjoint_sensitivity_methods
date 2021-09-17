@@ -1,6 +1,7 @@
 from calibration_sensitivity.calibration_sensitivity_adjoint.calibration_sensitivity_adjoint import Calibration_sensitivity_adjoint
 import numpy as np
 
+
 def calibration_optimization(calibration: Calibration_sensitivity_adjoint, nbr_epoch: int, lr: float):
     for epoch in range(nbr_epoch):
         # loss = calibration.evaluate() # TO DO: optimize it when doing forward and then backward

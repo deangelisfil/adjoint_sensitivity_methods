@@ -1,4 +1,4 @@
-from B_construction.b_construction_time_invariant import *
+from B_construction.B_construction_time_invariant_ import B_construction_time_invariant
 from auxiliary_functions import maximum
 from function import Function
 from parameters import *
@@ -29,8 +29,9 @@ def bs_pde_standard_forward(S0: float,
     S = np.array([S0 + j*delta_S for j in range(-J, J+1)])
     diff_u = option.diff_evaluate(S) * diff_S
     u = option.evaluate(S)
-    diff_B = B_construction_time_invariant_forward(S, sigma, r, delta_t, delta_S, diff_S, diff_sigma, diff_r)
-    B = B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S)
+    B_construction = B_construction_time_invariant(S, sigma, r, delta_t, delta_S)
+    diff_B = B_construction.forward([diff_S, diff_sigma, diff_r])
+    B = B_construction.evaluate()
     for n in reversed(range(N)):
         diff_u = np.dot(B, diff_u) + np.dot(diff_B, u)
         u = np.dot(B, u)

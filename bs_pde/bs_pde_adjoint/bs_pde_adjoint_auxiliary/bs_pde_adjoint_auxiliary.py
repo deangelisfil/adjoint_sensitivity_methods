@@ -31,12 +31,10 @@ class Bs_pde_adjoint_auxiliary(Black_box) :
     def reverse(self, p_bar) :
         return bs_pde_adjoint_auxiliary_reverse(self.B, p_bar)
 
-    def validate_reverse(self, diff_u, qoi_bar):
+    def validate_reverse(self, diff_u, qoi_bar) :
         # forward mode
         diff_qoi = self.forward(diff_u)
         # reverse mode
         u_bar = self.reverse(qoi_bar)
         b, err = check_forward_reverse_mode_identity([], [], diff_u, [u_bar], [diff_qoi], [qoi_bar], [], [])
         print("The forward/ reverse mode identiy holds:", b, "the error is:", err)
-
-

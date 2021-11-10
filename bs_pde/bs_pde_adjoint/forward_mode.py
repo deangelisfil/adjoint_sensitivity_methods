@@ -1,14 +1,18 @@
 from B_construction.B_construction_time_invariant_ import B_construction_time_invariant
 from function import Function
-from parameters import *
+from parameters import grid
 from bs_pde.bs_pde_adjoint.bs_pde_adjoint_auxiliary.bs_pde_adjoint_auxiliary import Bs_pde_adjoint_auxiliary
+from S_construction import S_construction
+import numpy as np
+
 
 def bs_pde_adjoint_forward(S0: float, sigma: float, r: float,
                            diff_S0: float, diff_sigma: float, diff_r: float,
                            option: Function):
-    diff_S = diff_S0 * np.ones(2*J + 1)
-    S = np.array([S0 + j*delta_S for j in range(-J, J+1)])
-    B_construction = B_construction_time_invariant(S, sigma, r, delta_t, delta_S)
+    s_construction = S_construction(S0, grid)
+    diff_S = s_construction.forward([diff_S0])
+    S = s_construction.evaluate()
+    B_construction = B_construction_time_invariant(S, sigma, r, grid.delta_t, grid.delta_S)
     diff_B = B_construction.forward([diff_S, diff_sigma, diff_r])
     B = B_construction.evaluate()
     bs_pde_adjoint_auxiliary = Bs_pde_adjoint_auxiliary(B)

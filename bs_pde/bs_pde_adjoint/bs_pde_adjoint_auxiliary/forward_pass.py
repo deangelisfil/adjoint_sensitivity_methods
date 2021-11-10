@@ -8,7 +8,7 @@ def bs_pde_adjoint_auxiliary(B):
     p[J] = 1
     B_transpose = B.transpose()
     for n in range(N):
-        p = np.dot(B_transpose, p)
+        p = B_transpose.dot(p)
     return p
 
 
@@ -17,6 +17,6 @@ def bs_pde_adjoint_auxiliary_f(B):
     p_all_list = [p]
     B_transpose = B.transpose()
     for n in range(N):
-        p = np.dot(B_transpose, p)
+        p = B_transpose.dot(p)
         p_all_list.append(p)
     return p_all_list

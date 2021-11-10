@@ -5,7 +5,7 @@ from calibration_sensitivity.calibration_loss import Calibration_loss
 from parameters import *
 
 
-def calibration_sensitivity_adjoint_b(S: float,
+def calibration_sensitivity_adjoint_b(S: np.ndarray,
                                       sigma: float,
                                       r: float,
                                       B: np.ndarray,
@@ -25,14 +25,14 @@ def calibration_sensitivity_adjoint_b(S: float,
     return sigma_bar, r_bar
 
 
-def calibration_sensitivity_adjoint_reverse(S0: float,
+def calibration_sensitivity_adjoint_reverse(S: np.ndarray,
                                             sigma: float,
                                             r: float,
                                             option_list: list,
                                             loss: Calibration_loss,
                                             loss_bar: float = 1) :
     # forward pass
-    S, B, f, P_model = calibration_sensitivity_adjoint_f(S0, sigma, r, option_list)
+    B, f, P_model = calibration_sensitivity_adjoint_f(S, sigma, r, option_list)
     # backward pass
     sigma_bar, r_bar = calibration_sensitivity_adjoint_b(S, sigma, r, B, f, P_model, loss, loss_bar)
     return sigma_bar, r_bar

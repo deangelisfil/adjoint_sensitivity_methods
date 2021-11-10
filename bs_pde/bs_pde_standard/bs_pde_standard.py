@@ -3,15 +3,22 @@ from bs_pde.bs_pde_standard.reverse_mode import bs_pde_standard_reverse
 from bs_pde.bs_pde_standard.forward_pass import bs_pde_standard
 from bs_pde.bs_pde_abstract import Bs_pde_abstract
 from function import Function
-
+from parameters import grid
+from Grid import Grid
 
 class Bs_pde_standard(Bs_pde_abstract):
-    def __init__(self, S0: float, sigma: float, r: float, option: Function, american: bool = False) -> None:
+    def __init__(self, S0: float,
+                 sigma: float,
+                 r: float,
+                 option: Function,
+                 grid_local: Grid = grid,
+                 american: bool = False) -> None:
         self.S0 = S0
         self.sigma = sigma
         self.r = r
         self.option = option
         self.american = american
+        self.grid = grid_local
 
     def __repr__(self):
         if self.american:
@@ -22,17 +29,18 @@ class Bs_pde_standard(Bs_pde_abstract):
                    ", option: " + str(self.option)
 
     def copy(self):
-        return Bs_pde_standard(self.S0, self.sigma, self.r, self.option, self.american)
+        return Bs_pde_standard(self.S0, self.sigma, self.r, self.option, self.grid, self.american)
 
     def evaluate(self, is_complex=False) -> float:
-        return bs_pde_standard(self.S0, self.sigma, self.r, self.option, self.american, is_complex)
+        return bs_pde_standard(self.S0, self.sigma, self.r, self.option, self.grid, self.american, is_complex)
 
     def forward(self, diff_u):
         diff_S0, diff_sigma, diff_r = diff_u
-        return bs_pde_standard_forward(self.S0, self.sigma, self.r, diff_S0, diff_sigma, diff_r, self.option, self.american)
+        return bs_pde_standard_forward(self.S0, self.sigma, self.r, diff_S0, diff_sigma, diff_r, self.option,
+                                       self.grid, self.american)
 
     def reverse(self, qoi_bar=1):
-        return bs_pde_standard_reverse(self.S0, self.sigma, self.r, self.option, qoi_bar, self.american)
+        return bs_pde_standard_reverse(self.S0, self.sigma, self.r, self.option, self.grid, self.american, qoi_bar)
 
 
 

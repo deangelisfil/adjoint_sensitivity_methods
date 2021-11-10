@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from auxiliary_functions import perturbe_scalar
 import numpy as np
 import copy
+from scipy import sparse
+
 
 class Black_box(ABC) :
     @abstractmethod
@@ -29,9 +31,10 @@ class Black_box(ABC) :
         u = self.get_u()
         res = u.copy()
         for idx, el in enumerate(res):
-            if type(el) == np.ndarray:
+            if isinstance(el, np.ndarray):
                 res[idx] = np.zeros(el.shape)
             else:
+                assert not hasattr(el, "__len__") # el is a scalar
                 res[idx] = 0
         return res
 
@@ -57,11 +60,11 @@ class Black_box(ABC) :
         return black_box_perturbed
 
     def validate_forward(self, idx_input, idx_array, idx_matrix) :
+        # no forward validation with u containing sparse matrices
         """
         validates l = [0,..0], l[idx_input] = 1 in the forward mode
         idx_input: indicates the number of input scalars/vectors/matrices
         idx_array: if u[idx_input] is an array, we validate l[idx_input] = [0,..,0], l[idx_input][idx_array] = 1
-        To do: add idx_matrix for the input being a matrix
         """
         # bumping
         epsilon = 10e-7
@@ -86,11 +89,18 @@ class Black_box(ABC) :
             diff_u[idx_input] = 1
         diff_qoi = self.forward(diff_u)
 
+        if sparse.issparse(diff_qoi_bumping) :
+            diff_qoi_bumping = diff_qoi_bumping.toarray()
+        if sparse.issparse(diff_qoi_complex_trick) :
+            diff_qoi_complex_trick = diff_qoi_complex_trick.toarray()
+        if sparse.issparse(diff_qoi):
+            diff_qoi = diff_qoi.toarray()
+
         err_complex = abs(diff_qoi_bumping - diff_qoi_complex_trick)
         err_forward = abs(diff_qoi_complex_trick - diff_qoi)
 
         # To Do: store the relative error bit in a new function
-        if type(err_complex) is np.ndarray and type(err_forward) is np.ndarray :
+        if isinstance(err_complex, np.ndarray) and isinstance(err_forward, np.ndarray):
             rel_err_complex = np.zeros(err_complex.shape)
             rel_err_forward = np.zeros(err_forward.shape)
             if err_complex.ndim == 1 and err_forward.ndim == 1:
@@ -121,8 +131,8 @@ class Black_box(ABC) :
         pass
 
     def validate(self, idx_input_forward_validation, diff_u, qoi_bar,
-                 idx_array_forward_validation = -1,
-                 idx_matrix_forward_validation = -1) :
+                 idx_array_forward_validation = np.nan,
+                 idx_matrix_forward_validation = np.nan) :
         self.validate_forward(idx_input_forward_validation,
                               idx_array_forward_validation,
                               idx_matrix_forward_validation)

@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy import sparse
 
 def B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S) :
     diff = delta_t / delta_S
@@ -7,11 +7,13 @@ def B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S) :
     a = S ** 2 * sigma ** 2 * diff2 / 2
     b = S * r * diff / 2
     low = a[1 :] - b[1 :]
-    low[-1] = - r * S[-1] * diff
     centre = 1 - r * delta_t - 2 * a
-    centre[-1] = 1 - r * delta_t + r * S[-1] * diff
     up = a[:-1] + b[:-1]
-    B = np.diag(low, -1) + np.diag(centre, 0) + np.diag(up, 1)
+    # boundary conditions s.t. d^u/dx^2 = 0
+    low[-1] = - 2 * b[-1]
+    centre[-1] = 1 - r * delta_t + 2*b[-1]
+    #B = np.diag(low, -1) + np.diag(centre, 0) + np.diag(up, 1)
+    B = sparse.diags([low,centre,up], offsets=[-1,0,1])
     return B
 
 
@@ -25,7 +27,8 @@ def B_construction_time_invariant_forward(S, sigma, r, delta_t, delta_S, diff_S,
     centre = -diff_r * delta_t - 2 * a
     centre[-1] = - diff_r * delta_t + diff_r * S[-1] * diff + r * diff_S[-1] * diff
     up = a[:-1] + b[:-1]
-    diff_B = np.diag(low, -1) + np.diag(centre, 0) + np.diag(up, 1)
+    # diff_B = np.diag(low, -1) + np.diag(centre, 0) + np.diag(up, 1)
+    diff_B = sparse.diags([low, centre, up], offsets=[-1, 0, 1])
     return diff_B
 
 
@@ -43,7 +46,7 @@ def B_construction_time_invariant_reverse(S, sigma, r, delta_t, delta_S, B_bar, 
     r_bar = (-delta_t + diff * S[-1]) * B_bar[-1][-1] - S[-1] * diff * B_bar[-1][-2]
     S_bar[-1] = S_bar[-1] + r * diff * (B_bar[-1][-1] - B_bar[-1][-2])
     for j in reversed(range(d - 1)) :
-        if j == 0 :
+        if j == 0:
             # B_bar[j-1][j] does not count
             a_bar = - 2 * B_bar[j][j] + B_bar[j][j + 1]
             b_bar = B_bar[j][j + 1]

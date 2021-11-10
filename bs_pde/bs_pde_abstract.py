@@ -4,7 +4,8 @@ from black_box import Black_box
 import numpy as np
 
 class Bs_pde_abstract(Black_box):
-
+    """Note that classes derived from Bs_pde_abstract take S0 as an input
+    and build a grid around S0 reaching [0,2*S0]"""
     @abstractmethod
     def copy(self):
         pass

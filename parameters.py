@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from Grid import Grid
-
+import os
 # grid parameters
 S0 = 1
 sigma = 0.2
@@ -18,9 +18,9 @@ grid = Grid(N, J, delta_S, delta_t)
 
 spot = 4235.24
 T = 1 # 1 week
-df = pd.read_csv("/Users/filippo/Desktop/smoking_adjoints/S&P500_options_21_06_14_w.csv",
-                 thousands=',',
-                 sep=",")
+cwd = os.getcwd()
+data_path = os.path.join(cwd, "S&P500_options_21_06_14_w.csv")
+df = pd.read_csv(data_path, thousands=',', sep=",")
 df_call = df[df["Type"]=="Call"]
 df_put = df[df["Type"]=="Put"]
 K_call_all = df_call["Strike"].to_numpy() / spot

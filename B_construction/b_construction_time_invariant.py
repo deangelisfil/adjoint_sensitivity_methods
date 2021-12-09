@@ -13,7 +13,7 @@ def B_construction_time_invariant_f(S, sigma, r, delta_t, delta_S) :
     low[-1] = - 2 * b[-1]
     centre[-1] = 1 - r * delta_t + 2*b[-1]
     #B = np.diag(low, -1) + np.diag(centre, 0) + np.diag(up, 1)
-    B = sparse.diags([low,centre,up], offsets=[-1,0,1])
+    B = sparse.diags([low,centre,up], offsets=[-1,0,1], format = "csc")
     return B
 
 
@@ -28,7 +28,7 @@ def B_construction_time_invariant_forward(S, sigma, r, delta_t, delta_S, diff_S,
     centre[-1] = - diff_r * delta_t + diff_r * S[-1] * diff + r * diff_S[-1] * diff
     up = a[:-1] + b[:-1]
     # diff_B = np.diag(low, -1) + np.diag(centre, 0) + np.diag(up, 1)
-    diff_B = sparse.diags([low, centre, up], offsets=[-1, 0, 1])
+    diff_B = sparse.diags([low, centre, up], offsets=[-1, 0, 1], format = "csc")
     return diff_B
 
 

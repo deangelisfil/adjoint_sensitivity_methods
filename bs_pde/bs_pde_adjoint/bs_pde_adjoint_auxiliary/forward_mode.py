@@ -1,6 +1,5 @@
 from parameters import *
 import numpy as np
-from scipy import sparse
 
 def bs_pde_adjoint_auxiliary_forward(B, diff_B):
     diff_p = np.zeros(2 * J + 1)

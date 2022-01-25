@@ -3,7 +3,7 @@ from function import Function
 from bs_pde.bs_pde_standard.bs_pde_standard_auxiliary import Bs_pde_standard_auxiliary
 from S_construction import S_construction
 import numpy as np
-from Grid import Grid
+from grid import Grid
 
 def bs_pde_standard(S0 : float,
                     sigma : float,

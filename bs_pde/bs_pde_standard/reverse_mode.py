@@ -4,7 +4,7 @@ from bs_pde.bs_pde_standard.bs_pde_standard_auxiliary import Bs_pde_standard_aux
 from function  import Function
 from S_construction import S_construction
 import numpy as np
-from Grid import Grid
+from grid import Grid
 
 # # reverse mode
 # def bs_pde_standard_auxiliary_b(B, qoi_bar=1) :

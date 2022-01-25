@@ -3,7 +3,7 @@ from auxiliary_functions import maximum
 from function import Function
 from bs_pde.bs_pde_standard.bs_pde_standard_auxiliary import Bs_pde_standard_auxiliary
 from S_construction import S_construction
-from Grid import Grid
+from grid import Grid
 
 # def bs_pde_standard_auxiliary_pde_forward(f, B, diff_f, diff_B):
 #     diff_b_all_list = []

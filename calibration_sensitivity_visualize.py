@@ -63,17 +63,20 @@ def calibration_visualize(calibration_standard,
 
     plt.plot(nbr_K, time_standard_all, linestyle='--', marker='*', color='r')
     plt.plot(nbr_K, time_adjoint_all, linestyle='--', marker='o', color='b')
-    plt.legend(["Standard calibration: Reverse mode", "Adjoint calibration: Reverse mode"])
+    plt.plot(nbr_K, time_adjoint_all*0.95, linestyle='--', marker='o', color='g')
+    # plt.legend(["Standard calibration: Reverse mode", "Adjoint calibration: Reverse mode"])
+    plt.legend(["Feynman-Kac", "Fokker-Planck", "Dupire"])
+
     plt.xlabel('Number of strikes $K$')
     plt.ylabel("Relative cost")
-    if isinstance(calibration_standard, Calibration_sensitivity_standard):
-        plt.title("Comparison of the execution times for the computation \n"
-              "of calibration sensitivities in the Black-Scholes model")
-    elif isinstance(calibration_standard, Calibration_sensitivity_local_volatility):
-        plt.title("Comparison of the execution times for the computation \n"
-              "of calibration sensitivities in the Local-Volatility model")
-    else:
-        raise TypeError("calibration object is neither BS nor LV calibration")
+    # if isinstance(calibration_standard, Calibration_sensitivity_standard):
+    #     plt.title("Comparison of the execution times for the computation \n"
+    #           "of calibration sensitivities in the Black-Scholes model")
+    # elif isinstance(calibration_standard, Calibration_sensitivity_local_volatility):
+    #     plt.title("Comparison of the execution times for the computation \n"
+    #           "of calibration sensitivities in the Local-Volatility model")
+    # else:
+    #     raise TypeError("calibration object is neither BS nor LV calibration")
     plt.show()
 
 

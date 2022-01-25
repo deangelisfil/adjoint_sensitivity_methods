@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from Grid import Grid
+from grid import Grid
 import os
 # grid parameters
 S0 = 1

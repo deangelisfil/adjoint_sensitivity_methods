@@ -1,7 +1,7 @@
 from black_box import Black_box
 import numpy as np
 from auxiliary_functions import check_forward_reverse_mode_identity
-from Grid import Grid
+from grid import Grid
 
 # To do: add the S_construction to all functions like I did with bs_pde_standard
 # To do: check whether it makes sense to view delta_S as a variable of S0

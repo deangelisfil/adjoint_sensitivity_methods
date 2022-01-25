@@ -4,7 +4,7 @@ from bs_pde.bs_pde_standard.forward_pass import bs_pde_standard
 from bs_pde.bs_pde_abstract import Bs_pde_abstract
 from function import Function
 from parameters import grid
-from Grid import Grid
+from grid import Grid
 
 class Bs_pde_standard(Bs_pde_abstract):
     def __init__(self, S0: float,

@@ -3,7 +3,7 @@ import numpy as np
 from parameters import grid
 from auxiliary_functions import maximum
 from auxiliary_functions import check_forward_reverse_mode_identity
-from Grid import Grid
+from grid import Grid
 
 class Bs_pde_standard_auxiliary(Black_box) :
     def __init__(self, B: np.ndarray,
